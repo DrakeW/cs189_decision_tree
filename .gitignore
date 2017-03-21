@@ -1,5 +1,6 @@
-dist
+spam_dist
 .DS_Store
 *.ipynb
 *.zip
 .idea
+*.pyc

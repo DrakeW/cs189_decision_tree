@@ -11,7 +11,7 @@ class DTNode:
 
 class DecisionTree:
 
-    def __init__(self, max_depth):
+    def __init__(self, max_depth=None):
         self.max_depth = max_depth
         self.root = None
 
@@ -41,6 +41,8 @@ class DecisionTree:
         if len(np.unique(labels)) == 1:
             return DTNode(None, None, None, None, labels[0])
         split_rule = self.segmenter(data, labels)
+        if split_rule == None:
+            return DTNode(None, None, None, None, np.argmax(np.bincount(labels)))
         feature, val = split_rule
         left_idx, right_idx = data[:,feature] < val, data[:, feature] >= val
         return DTNode(feature, val, \
@@ -52,19 +54,19 @@ class DecisionTree:
     """
     def segmenter(self, data, labels):
         best_split_rule, smallest_impurity = None, float("inf")
-        for l in range(len(labels)):
+        for feat in range(data.shape[1]):
             # TODO: use radix sort if that can make it faster
-            values = np.sort(np.unique(data[:,l]))
+            values = np.sort(np.unique(data[:,feat]))
             for idx, val in enumerate(values):
                 if idx == len(values) - 1:
                     continue
                 split_val = float(values[idx] + values[idx+1])/2
-                left = labels[data[:,l] < split_val]
-                right = labels[data[:, l] >= split_val]
+                left = labels[data[:,feat] < split_val]
+                right = labels[data[:, feat] >= split_val]
                 imp = self.impurity(stats.itemfreq(left)[:,1], stats.itemfreq(right)[:,1])
                 if imp < smallest_impurity:
                     smallest_impurity = imp
-                    best_split_rule = (l, split_val)
+                    best_split_rule = (feat, split_val)
         return best_split_rule
 
     """
