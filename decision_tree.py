@@ -10,7 +10,6 @@ class DTNode:
 
 
 class DecisionTree:
-
     def __init__(self, max_depth=None):
         self.max_depth = max_depth
         self.root = None
