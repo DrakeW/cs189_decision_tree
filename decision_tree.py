@@ -82,38 +82,32 @@ class DecisionTree:
                 left = labels[data[:,feat] < split_val]
                 right = labels[data[:, feat] >= split_val]
 
-                # experiment
                 C = float(np.sum(left))
                 c = counter[1] - C
                 D = float(len(left) - C)
                 d = counter[0] - D
 
-                t1 = C * np.log2(C/(C+D)) if C != 0 else 0
-                t2 = D * np.log2(D/(C+D)) if D != 0 else 0
-                t3 = c * np.log2(c/(c+d)) if c != 0 else 0
-                t4 = d * np.log2(d/(c+d)) if d != 0 else 0
-                imp = (float(-1) / len(labels)) * (t1 + t2 + t3 + t4)
+                left_hist = np.array([C, D])
+                right_hist = np.array([c, d])
+                imp = self.impurity(left_hist, right_hist)
 
-                # imp = self.impurity(self.get_hist(left), self.get_hist(right))
                 if imp < smallest_impurity:
                     smallest_impurity = imp
                     best_split_rule = (feat, split_val)
         return best_split_rule
 
-    def get_hist(self, labels):
-        bins = np.bincount(labels)
-        return bins[np.nonzero(bins)] / float(len(labels))
-
     """
     return the badness (to minimize) of a split
     """
     def impurity(self, left_label_hist, right_label_hist):
-        H_l, H_r = self.entropy(left_label_hist), self.entropy(right_label_hist)
-        len_l, len_r = len(left_label_hist), len(right_label_hist)
-        return (len_l * H_l + len_r * H_r) / (len_l + len_r)
-
-    def entropy(self, freq_data):
-        return -1 * np.sum(freq_data * np.log2(freq_data))
+        C, D = left_label_hist
+        c, d = right_label_hist
+        t1 = C * np.log2(C/(C+D)) if C != 0 else 0
+        t2 = D * np.log2(D/(C+D)) if D != 0 else 0
+        t3 = c * np.log2(c/(c+d)) if c != 0 else 0
+        t4 = d * np.log2(d/(c+d)) if d != 0 else 0
+        imp = (float(-1) / (C+D+c+d)) * (t1 + t2 + t3 + t4)
+        return imp
 
     def __str__(self):
         return ""
