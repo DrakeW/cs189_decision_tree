@@ -66,6 +66,7 @@ class DecisionTree:
     return best feature to split
     """
     def segmenter(self, data, labels, attr_bagging_size):
+        counter = Counter(labels)
         best_split_rule, smallest_impurity = None, float("inf")
         if attr_bagging_size is None:
             features = range(data.shape[1])
@@ -80,7 +81,20 @@ class DecisionTree:
                 split_val = float(values[idx] + values[idx+1])/2
                 left = labels[data[:,feat] < split_val]
                 right = labels[data[:, feat] >= split_val]
-                imp = self.impurity(self.get_hist(left), self.get_hist(right))
+
+                # experiment
+                C = float(np.sum(left))
+                c = counter[1] - C
+                D = float(len(left) - C)
+                d = counter[0] - D
+
+                t1 = C * np.log2(C/(C+D)) if C != 0 else 0
+                t2 = D * np.log2(D/(C+D)) if D != 0 else 0
+                t3 = c * np.log2(c/(c+d)) if c != 0 else 0
+                t4 = d * np.log2(d/(c+d)) if d != 0 else 0
+                imp = (float(-1) / len(labels)) * (t1 + t2 + t3 + t4)
+
+                # imp = self.impurity(self.get_hist(left), self.get_hist(right))
                 if imp < smallest_impurity:
                     smallest_impurity = imp
                     best_split_rule = (feat, split_val)
@@ -89,6 +103,7 @@ class DecisionTree:
     def get_hist(self, labels):
         bins = np.bincount(labels)
         return bins[np.nonzero(bins)] / float(len(labels))
+
     """
     return the badness (to minimize) of a split
     """
