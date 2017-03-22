@@ -70,7 +70,7 @@ class DecisionTree:
         if attr_bagging_size is None:
             features = range(data.shape[1])
         else:
-            features = np.random.randint(0, data.shape[1], attr_bagging_size)
+            features = np.random.choice(data.shape[1], attr_bagging_size, replace=False)
         for feat in features:
             # TODO: use radix sort if that can make it faster
             values = np.sort(list(set(data[:,feat])))
