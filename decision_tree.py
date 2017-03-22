@@ -1,4 +1,5 @@
 import numpy as np
+from collections import Counter
 
 class DTNode:
     def __init__(self, feature, threshold, left, right, label=None):
@@ -47,20 +48,19 @@ class DecisionTree:
     """
     build tree build the decision tree and return the root node
     """
-    # TODO: need to handle max depth here
-    def build_tree(self, data, labels, attr_bagging_size):
+    def build_tree(self, data, labels, attr_bagging_size, depth=1):
         if len(labels) == 0:
             return None
         if len(set(labels)) == 1:
             return DTNode(None, None, None, None, labels[0])
         split_rule = self.segmenter(data, labels, attr_bagging_size)
-        if split_rule == None:
+        if split_rule is None or depth >= self.max_depth:
             return DTNode(None, None, None, None, np.argmax(np.bincount(labels)))
         feature, val = split_rule
         left_idx, right_idx = data[:,feature] < val, data[:, feature] >= val
         return DTNode(feature, val, \
-                      self.build_tree(data[left_idx], labels[left_idx], attr_bagging_size), \
-                      self.build_tree(data[right_idx], labels[right_idx], attr_bagging_size))
+                      self.build_tree(data[left_idx], labels[left_idx], attr_bagging_size, depth + 1), \
+                      self.build_tree(data[right_idx], labels[right_idx], attr_bagging_size, depth + 1))
 
     """
     return best feature to split
