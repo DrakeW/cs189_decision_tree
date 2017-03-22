@@ -54,7 +54,7 @@ class DecisionTree:
         if len(set(labels)) == 1:
             return DTNode(None, None, None, None, labels[0])
         split_rule = self.segmenter(data, labels, attr_bagging_size)
-        if split_rule is None or depth >= self.max_depth:
+        if split_rule is None or (self.max_depth is not None and depth >= self.max_depth):
             return DTNode(None, None, None, None, np.argmax(np.bincount(labels)))
         feature, val = split_rule
         left_idx, right_idx = data[:,feature] < val, data[:, feature] >= val
@@ -87,8 +87,8 @@ class DecisionTree:
         return best_split_rule
 
     def get_hist(self, labels):
-        return np.unique(labels, return_counts=True)[1] / float(len(labels))
-
+        bins = np.bincount(labels)
+        return bins[np.nonzero(bins)] / float(len(labels))
     """
     return the badness (to minimize) of a split
     """

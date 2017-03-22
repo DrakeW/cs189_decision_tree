@@ -3,7 +3,7 @@ from random_forest import RandomForest
 import numpy as np
 from scipy import io
 
-data = io.loadmat('spam_dist/spam_data.mat')
+data = io.loadmat('spam_dist/spam_data_default.mat')
 
 train_data = data['training_data']
 train_lab = data['training_labels'][0]
@@ -20,7 +20,7 @@ train_data = np.delete(train_data, valid_idx, 0)
 train_lab = np.delete(train_lab, valid_idx)
 
 # # Decision Tree
-clf = DecisionTree(max_depth=20)
+clf = DecisionTree(max_depth=50)
 clf.train(train_data, train_lab)
 
 preds = clf.predict(valid_data)
