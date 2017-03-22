@@ -1,4 +1,5 @@
 from decision_tree import DecisionTree
+from random_forest import RandomForest
 import numpy as np
 from scipy import io
 
@@ -22,5 +23,10 @@ clf = DecisionTree()
 clf.train(train_data, train_lab)
 
 preds = clf.predict(valid_data)
+print np.mean(preds == valid_lab) # 0.797890295359
 
-print np.mean(preds == valid_lab)
+# rf_clf = RandomForest(20, train_data.shape[0], int(np.sqrt(train_data.shape[1])))
+# rf_clf.train(train_data, train_lab)
+#
+# preds2 = rf_clf.predict(valid_data)
+# print np.mean(preds2 == valid_lab)

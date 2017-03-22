@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.stats as stats
 
 class DTNode:
     def __init__(self, feature, threshold, left, right, label=None):
@@ -14,8 +13,16 @@ class DecisionTree:
         self.max_depth = max_depth
         self.root = None
 
-    def train(self, train_data, train_labels):
-        self.root = self.build_tree(train_data, train_labels)
+    @property
+    def depth(self):
+        def get_depth(node):
+            if node.label is not None:
+                return 1
+            return 1 + max(get_depth(node.left), get_depth(node.right))
+        return get_depth(self.root)
+
+    def train(self, train_data, train_labels, attr_bagging_size=None):
+        self.root = self.build_tree(train_data, train_labels, attr_bagging_size)
 
     def predict(self, data):
         return map(lambda p: self.pred_data_point(p), data)
@@ -34,26 +41,30 @@ class DecisionTree:
     build tree build the decision tree and return the root node
     """
     # TODO: need to handle max depth here
-    def build_tree(self, data, labels):
+    def build_tree(self, data, labels, attr_bagging_size):
         if len(labels) == 0:
             return None
         if len(set(labels)) == 1:
             return DTNode(None, None, None, None, labels[0])
-        split_rule = self.segmenter(data, labels)
+        split_rule = self.segmenter(data, labels, attr_bagging_size)
         if split_rule == None:
             return DTNode(None, None, None, None, np.argmax(np.bincount(labels)))
         feature, val = split_rule
         left_idx, right_idx = data[:,feature] < val, data[:, feature] >= val
         return DTNode(feature, val, \
-                      self.build_tree(data[left_idx], labels[left_idx]), \
-                      self.build_tree(data[right_idx], labels[right_idx]))
+                      self.build_tree(data[left_idx], labels[left_idx], attr_bagging_size), \
+                      self.build_tree(data[right_idx], labels[right_idx], attr_bagging_size))
 
     """
     return best feature to split
     """
-    def segmenter(self, data, labels):
+    def segmenter(self, data, labels, attr_bagging_size):
         best_split_rule, smallest_impurity = None, float("inf")
-        for feat in range(data.shape[1]):
+        if attr_bagging_size is None:
+            features = range(data.shape[1])
+        else:
+            features = np.random.randint(0, data.shape[1], attr_bagging_size)
+        for feat in features:
             # TODO: use radix sort if that can make it faster
             values = np.sort(list(set(data[:,feat])))
             for idx, val in enumerate(values):
