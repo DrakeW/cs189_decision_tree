@@ -19,14 +19,16 @@ valid_lab = train_lab[valid_idx]
 train_data = np.delete(train_data, valid_idx, 0)
 train_lab = np.delete(train_lab, valid_idx)
 
-clf = DecisionTree()
-clf.train(train_data, train_lab)
-
-preds = clf.predict(valid_data)
-print np.mean(preds == valid_lab) # 0.797890295359
-
-# rf_clf = RandomForest(20, train_data.shape[0], int(np.sqrt(train_data.shape[1])))
-# rf_clf.train(train_data, train_lab)
+# # Decision Tree
+# clf = DecisionTree()
+# clf.train(train_data, train_lab)
 #
-# preds2 = rf_clf.predict(valid_data)
-# print np.mean(preds2 == valid_lab)
+# preds = clf.predict(valid_data)
+# print np.mean(preds == valid_lab) # 0.797890295359
+
+# Random Forest
+rf_clf = RandomForest(150, train_data.shape[0] / 4, int(np.sqrt(train_data.shape[1])))
+rf_clf.train(train_data, train_lab)
+
+preds2 = rf_clf.predict(valid_data)
+print np.mean(preds2 == valid_lab)

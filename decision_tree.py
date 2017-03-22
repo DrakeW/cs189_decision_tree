@@ -7,6 +7,13 @@ class DTNode:
         self.right = right
         self.label = label
 
+    def __str__(self):
+        return """********************
+                  *   feature: {0}   *
+                  *   threshold: {1} *
+                  *   label: {2}     *
+                  ********************""".format(self.split_rule[0], self.split_rule[1], self.label)
+
 
 class DecisionTree:
     def __init__(self, max_depth=None):
@@ -92,3 +99,6 @@ class DecisionTree:
 
     def entropy(self, freq_data):
         return -1 * np.sum(freq_data * np.log2(freq_data))
+
+    def __str__(self):
+        return ""
