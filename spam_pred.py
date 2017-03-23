@@ -24,8 +24,7 @@ clf = DecisionTree()
 clf.train(train_data, train_lab)
 
 preds = clf.predict(valid_data)
-print np.mean(preds == valid_lab) # 0.797890295359
-
+print np.mean(preds == valid_lab)
 print clf.depth
 
 # Random Forest

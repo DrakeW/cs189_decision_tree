@@ -82,7 +82,7 @@ class DecisionTree:
                 left = labels[data[:,feat] < split_val]
                 right = labels[data[:, feat] >= split_val]
 
-                C = float(np.sum(left))
+                C = float(np.sum(left)) # num of 1s on the left split
                 c = counter[1] - C
                 D = float(len(left) - C)
                 d = counter[0] - D
