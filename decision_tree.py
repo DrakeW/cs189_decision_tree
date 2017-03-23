@@ -11,7 +11,7 @@ class DTNode:
 
     def print_node(self, vocab):
         feature = None if self.label is not None else vocab[self.split_rule[0]]
-        return "[{0},{1},{2}]".format(feature, self.split_rule[1], self.label)
+        return "[{0},{1},{2}, {3}]".format(feature, self.split_rule[1], self.label, hex(id(self))[-3:])
 
 
 class DecisionTree:
