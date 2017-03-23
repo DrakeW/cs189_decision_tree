@@ -1,4 +1,5 @@
 import numpy as np
+import pydot
 from collections import Counter
 
 class DTNode:
@@ -131,3 +132,21 @@ class DecisionTree:
             res += "\n\n"
             cur = temp
         print res
+
+    def draw_tree(self, vocab):
+        graph = pydot.Dot(graph_type='digraph')
+        cur = [self.root]
+        while len(cur):
+            temp = []
+            for node in cur:
+                if node is not None:
+                    if node.left is not None:
+                        edge = pydot.Edge(node.print_node(vocab), node.left.print_node(vocab))
+                        graph.add_edge(edge)
+                        temp.append(node.left)
+                    if node.right is not None:
+                        edge = pydot.Edge(node.print_node(vocab), node.right.print_node(vocab))
+                        graph.add_edge(edge)
+                        temp.append(node.right)
+            cur = temp
+        graph.write("./btree.png", format="png")

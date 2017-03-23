@@ -28,7 +28,7 @@ print np.mean(preds == valid_lab)
 print clf.depth
 
 vocab = {int(v): k.strip() for k,v in data['vocabulary_to_idx']}
-clf.print_tree(vocab)
+clf.draw_tree(vocab)
 
 # Random Forest
 # rf_clf = RandomForest(100, train_data.shape[0] / 4, int(np.sqrt(train_data.shape[1])), max_depth=20)
