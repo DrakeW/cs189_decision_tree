@@ -3,7 +3,7 @@ from random_forest import RandomForest
 import numpy as np
 from scipy import io
 
-data = io.loadmat('spam_dist/spam_data_default.mat')
+data = io.loadmat('spam_dist/spam_data.mat')
 
 train_data = data['training_data']
 train_lab = data['training_labels'][0]
@@ -20,12 +20,15 @@ train_data = np.delete(train_data, valid_idx, 0)
 train_lab = np.delete(train_lab, valid_idx)
 
 # # Decision Tree
-clf = DecisionTree()
+clf = DecisionTree(max_depth=3)
 clf.train(train_data, train_lab)
 
 preds = clf.predict(valid_data)
 print np.mean(preds == valid_lab)
 print clf.depth
+
+vocab = {int(v): k.strip() for k,v in data['vocabulary_to_idx']}
+clf.print_tree(vocab)
 
 # Random Forest
 # rf_clf = RandomForest(100, train_data.shape[0] / 4, int(np.sqrt(train_data.shape[1])), max_depth=20)

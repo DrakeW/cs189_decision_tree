@@ -8,12 +8,9 @@ class DTNode:
         self.right = right
         self.label = label
 
-    def __str__(self):
-        return """********************
-                  *   feature: {0}   *
-                  *   threshold: {1} *
-                  *   label: {2}     *
-                  ********************""".format(self.split_rule[0], self.split_rule[1], self.label)
+    def print_node(self, vocab):
+        feature = None if self.label is not None else vocab[self.split_rule[0]]
+        return "[f: {0}, val: {1}, lab: {2}]".format(feature, self.split_rule[1], self.label)
 
 
 class DecisionTree:
@@ -110,4 +107,27 @@ class DecisionTree:
         return imp
 
     def __str__(self):
-        return ""
+        def print_tree(node):
+            if node.label is not None:
+                return node.__str__()
+            res = node.__str__() + "\n\n"
+            res += "left: {0} right: {1}\n\n".format(print_tree(node.left), print_tree(node.right))
+            return res
+        return print_tree(self.root)
+
+    def print_tree(self, vocab):
+        res = ""
+        cur = [self.root]
+        while len(cur):
+            temp = []
+            for node in cur:
+                if node is None:
+                    res += "None\t"
+                else:
+                    res += node.print_node(vocab) + "\t"
+                if node is not None:
+                    temp.append(node.left)
+                    temp.append(node.right)
+            res += "\n\n"
+            cur = temp
+        print res
