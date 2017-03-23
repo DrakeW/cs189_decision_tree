@@ -134,6 +134,7 @@ class DecisionTree:
         print res
 
     # brew install graphviz
+    # pip install pydot
     def draw_tree(self, vocab):
         graph = pydot.Dot(graph_type='digraph')
         cur = [self.root]
