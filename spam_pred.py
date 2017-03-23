@@ -20,7 +20,7 @@ train_data = np.delete(train_data, valid_idx, 0)
 train_lab = np.delete(train_lab, valid_idx)
 
 # # Decision Tree
-clf = DecisionTree(max_depth=3)
+clf = DecisionTree(max_depth=5)
 clf.train(train_data, train_lab)
 
 preds = clf.predict(valid_data)
