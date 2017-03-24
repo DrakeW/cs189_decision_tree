@@ -10,7 +10,7 @@ class DTNode:
         self.label = label
 
     def print_node(self, vocab):
-        feature = None if self.label is not None else vocab[self.split_rule[0]]
+        feature = None if self.label is not None else "{0}".format(vocab[self.split_rule[0]])
         return "{0}, {1}, {2}\n{3}".format(feature, self.split_rule[1], self.label, hex(id(self))[-3:])
 
 
@@ -137,7 +137,7 @@ class DecisionTree:
 
     # brew install graphviz
     # pip install pydot
-    def draw_tree(self, vocab):
+    def draw_tree(self, path, vocab):
         graph = pydot.Dot(graph_type='digraph')
         cur = [self.root]
         while len(cur):
@@ -153,4 +153,4 @@ class DecisionTree:
                         graph.add_edge(edge)
                         temp.append(node.right)
             cur = temp
-        graph.write("./btree.png", format="png")
+        graph.write(path, format="png")
