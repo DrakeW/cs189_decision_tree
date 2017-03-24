@@ -22,6 +22,8 @@ class DecisionTree:
     @property
     def depth(self):
         def get_depth(node):
+            if node is None:
+                return 0
             if node.label is not None:
                 return 1
             return 1 + max(get_depth(node.left), get_depth(node.right))
